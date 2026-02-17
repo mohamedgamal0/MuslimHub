@@ -24,5 +24,5 @@ enum WidgetShared {
         return (today.completedPrayers.count, 5)
     }
 
-    static let themeGreen = Color(red: 0.106, green: 0.420, blue: 0.302)
+    static let themeGreen = Color(red: 39/255, green: 72/255, blue: 51/255)
 }

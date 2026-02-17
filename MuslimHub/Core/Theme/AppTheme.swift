@@ -8,9 +8,11 @@ enum IslamicColors {
     static let cream = Color("CreamBackground", bundle: nil)
     static let teal = Color("TealAccent", bundle: nil)
 
-    static let primaryGreenFallback = Color(red: 0.106, green: 0.420, blue: 0.302)
-    static let darkGreenFallback = Color(red: 0.059, green: 0.255, blue: 0.180)
-    static let goldFallback = Color(red: 0.769, green: 0.639, blue: 0.353)
+    /// Primary green #274833
+    static let primaryGreenFallback = Color(red: 39/255, green: 72/255, blue: 51/255)
+    static let darkGreenFallback = Color(red: 20/255, green: 45/255, blue: 32/255)
+    /// Gold accent #DDD7AA
+    static let goldFallback = Color(red: 221/255, green: 215/255, blue: 170/255)
     static let creamFallback = Color(red: 0.992, green: 0.973, blue: 0.941)
     static let tealFallback = Color(red: 0.165, green: 0.616, blue: 0.561)
 
