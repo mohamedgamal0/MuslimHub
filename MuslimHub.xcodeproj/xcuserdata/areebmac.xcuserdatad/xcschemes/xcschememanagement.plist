@@ -7,7 +7,25 @@
 		<key>MuslimHub.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>MuslimHubWidgetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>28578E5B2F44952300DDACDC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>285792402F44B94000DDACDC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

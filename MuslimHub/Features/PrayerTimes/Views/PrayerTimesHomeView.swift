@@ -23,6 +23,7 @@ struct PrayerTimesHomeView: View {
             .background(Color(.systemGroupedBackground))
             .onAppear {
                 viewModel.requestLocation()
+                viewModel.updateLiveActivityIfNeeded()
             }
             .sheet(isPresented: $showQibla) {
                 QiblaView()

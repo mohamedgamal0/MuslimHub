@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreLocation
+import MapKit
 
 @Observable
 final class PrayerTimesViewModel {
@@ -60,6 +61,7 @@ final class PrayerTimesViewModel {
             latitude: lat,
             longitude: lon
         )
+        updateLiveActivityIfNeeded()
 
         if location != nil {
             reverseGeocode(location!)
@@ -74,11 +76,23 @@ final class PrayerTimesViewModel {
     }
 
     private func reverseGeocode(_ location: CLLocation) {
-        let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, _ in
-            if let city = placemarks?.first?.locality,
-               let country = placemarks?.first?.country {
-                self?.locationName = "\(city), \(country)"
+        if #available(iOS 26.0, *) {
+            guard let request = MKReverseGeocodingRequest(location: location) else { return }
+            request.getMapItems { [weak self] mapItems, _ in
+                guard let item = mapItems?.first else { return }
+                let city = item.placemark.locality
+                let country = item.placemark.country
+                if let city = city, let country = country {
+                    self?.locationName = "\(city), \(country)"
+                }
+            }
+        } else {
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, _ in
+                if let city = placemarks?.first?.locality,
+                   let country = placemarks?.first?.country {
+                    self?.locationName = "\(city), \(country)"
+                }
             }
         }
     }
@@ -102,23 +116,48 @@ final class PrayerTimesViewModel {
         }
 
         saveTracking()
+        updateLiveActivityIfNeeded()
     }
 
     func isPrayerCompleted(_ prayer: Prayer) -> Bool {
         todayTracking.isCompleted(prayer)
     }
 
-    // MARK: - Persistence
+    // MARK: - Persistence (App Group for widget)
+    private static let appGroupID = "group.com.Areeb.MuslimHub"
+    private var sharedDefaults: UserDefaults? {
+        UserDefaults(suiteName: Self.appGroupID)
+    }
+
     private func saveTracking() {
-        if let data = try? JSONEncoder().encode(trackingDays) {
-            UserDefaults.standard.set(data, forKey: "prayer_tracking")
-        }
+        guard let data = try? JSONEncoder().encode(trackingDays) else { return }
+        sharedDefaults?.set(data, forKey: "prayer_tracking")
+        sharedDefaults?.synchronize()
+        UserDefaults.standard.set(data, forKey: "prayer_tracking")
     }
 
     private func loadTracking() {
-        if let data = UserDefaults.standard.data(forKey: "prayer_tracking"),
-           let saved = try? JSONDecoder().decode([PrayerTrackingDay].self, from: data) {
-            trackingDays = saved
-        }
+        let data = sharedDefaults?.data(forKey: "prayer_tracking")
+            ?? UserDefaults.standard.data(forKey: "prayer_tracking")
+        guard let data = data,
+              let saved = try? JSONDecoder().decode([PrayerTrackingDay].self, from: data) else { return }
+        trackingDays = saved
+    }
+
+    // MARK: - Live Activity
+    func updateLiveActivityIfNeeded() {
+        guard #available(iOS 16.2, *) else { return }
+        let completed = todayTracking.completedPrayers.count
+        let nextName = nextPrayer?.prayer.localizedName ?? "—"
+        let nextTime = nextPrayer?.timeString ?? "—"
+        LiveActivityManager.shared.startOrUpdate(
+            completedCount: completed,
+            nextPrayerName: nextName,
+            nextPrayerTime: nextTime
+        )
+        // Cache for Lock Screen / Dynamic Island when app launches from cold
+        sharedDefaults?.set(nextName, forKey: "last_next_prayer_name")
+        sharedDefaults?.set(nextTime, forKey: "last_next_prayer_time")
+        sharedDefaults?.synchronize()
     }
 }

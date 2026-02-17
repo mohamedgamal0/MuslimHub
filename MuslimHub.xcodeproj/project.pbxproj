@@ -6,14 +6,65 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		285792442F44B94000DDACDC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 285792432F44B94000DDACDC /* WidgetKit.framework */; };
+		285792462F44B94000DDACDC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 285792452F44B94000DDACDC /* SwiftUI.framework */; };
+		285792532F44B94100DDACDC /* MuslimHubWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 285792412F44B94000DDACDC /* MuslimHubWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		285792512F44B94100DDACDC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28578E542F44952300DDACDC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 285792402F44B94000DDACDC;
+			remoteInfo = MuslimHubWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		285792542F44B94100DDACDC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				285792532F44B94100DDACDC /* MuslimHubWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		28578E5C2F44952300DDACDC /* MuslimHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MuslimHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		285792412F44B94000DDACDC /* MuslimHubWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MuslimHubWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		285792432F44B94000DDACDC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		285792452F44B94000DDACDC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		285792572F44B94100DDACDC /* Exceptions for "MuslimHubWidget" folder in "MuslimHubWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 285792402F44B94000DDACDC /* MuslimHubWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		28578E5E2F44952300DDACDC /* MuslimHub */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MuslimHub;
+			sourceTree = "<group>";
+		};
+		285792472F44B94000DDACDC /* MuslimHubWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				285792572F44B94100DDACDC /* Exceptions for "MuslimHubWidget" folder in "MuslimHubWidgetExtension" target */,
+			);
+			path = MuslimHubWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -26,6 +77,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2857923E2F44B94000DDACDC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				285792462F44B94000DDACDC /* SwiftUI.framework in Frameworks */,
+				285792442F44B94000DDACDC /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -33,6 +93,8 @@
 			isa = PBXGroup;
 			children = (
 				28578E5E2F44952300DDACDC /* MuslimHub */,
+				285792472F44B94000DDACDC /* MuslimHubWidget */,
+				285792422F44B94000DDACDC /* Frameworks */,
 				28578E5D2F44952300DDACDC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,8 +103,18 @@
 			isa = PBXGroup;
 			children = (
 				28578E5C2F44952300DDACDC /* MuslimHub.app */,
+				285792412F44B94000DDACDC /* MuslimHubWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		285792422F44B94000DDACDC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				285792432F44B94000DDACDC /* WidgetKit.framework */,
+				285792452F44B94000DDACDC /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -55,10 +127,12 @@
 				28578E582F44952300DDACDC /* Sources */,
 				28578E592F44952300DDACDC /* Frameworks */,
 				28578E5A2F44952300DDACDC /* Resources */,
+				285792542F44B94100DDACDC /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				285792522F44B94100DDACDC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				28578E5E2F44952300DDACDC /* MuslimHub */,
@@ -69,6 +143,28 @@
 			productName = MuslimHub;
 			productReference = 28578E5C2F44952300DDACDC /* MuslimHub.app */;
 			productType = "com.apple.product-type.application";
+		};
+		285792402F44B94000DDACDC /* MuslimHubWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 285792582F44B94100DDACDC /* Build configuration list for PBXNativeTarget "MuslimHubWidgetExtension" */;
+			buildPhases = (
+				2857923D2F44B94000DDACDC /* Sources */,
+				2857923E2F44B94000DDACDC /* Frameworks */,
+				2857923F2F44B94000DDACDC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				285792472F44B94000DDACDC /* MuslimHubWidget */,
+			);
+			name = MuslimHubWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = MuslimHubWidgetExtension;
+			productReference = 285792412F44B94000DDACDC /* MuslimHubWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +177,9 @@
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					28578E5B2F44952300DDACDC = {
+						CreatedOnToolsVersion = 26.2;
+					};
+					285792402F44B94000DDACDC = {
 						CreatedOnToolsVersion = 26.2;
 					};
 				};
@@ -101,12 +200,20 @@
 			projectRoot = "";
 			targets = (
 				28578E5B2F44952300DDACDC /* MuslimHub */,
+				285792402F44B94000DDACDC /* MuslimHubWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		28578E5A2F44952300DDACDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2857923F2F44B94000DDACDC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -123,7 +230,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2857923D2F44B94000DDACDC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		285792522F44B94100DDACDC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 285792402F44B94000DDACDC /* MuslimHubWidgetExtension */;
+			targetProxy = 285792512F44B94100DDACDC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		28578E652F44952500DDACDC /* Debug */ = {
@@ -252,12 +374,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MuslimHub/MuslimHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XG27T936QL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "MuslimHub needs your location to calculate accurate prayer times and Qibla direction for your area.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -285,12 +409,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MuslimHub/MuslimHub.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XG27T936QL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "MuslimHub needs your location to calculate accurate prayer times and Qibla direction for your area.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -306,6 +432,68 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		285792552F44B94100DDACDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = MuslimHubWidget/MuslimHubWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XG27T936QL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MuslimHubWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MuslimHubWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Areeb.MuslimHub.MuslimHubWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		285792562F44B94100DDACDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = MuslimHubWidget/MuslimHubWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XG27T936QL;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MuslimHubWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MuslimHubWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Areeb.MuslimHub.MuslimHubWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -330,6 +518,15 @@
 			buildConfigurations = (
 				28578E682F44952500DDACDC /* Debug */,
 				28578E692F44952500DDACDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		285792582F44B94100DDACDC /* Build configuration list for PBXNativeTarget "MuslimHubWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				285792552F44B94100DDACDC /* Debug */,
+				285792562F44B94100DDACDC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
