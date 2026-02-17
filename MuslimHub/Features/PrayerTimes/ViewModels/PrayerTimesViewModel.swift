@@ -9,6 +9,8 @@ final class PrayerTimesViewModel {
     var trackingDays: [PrayerTrackingDay] = []
     var selectedDate: Date = Date()
     var locationName: String = "Loading..."
+    /// Set when API fetch fails and fallback to local calculation was used; nil when API succeeded.
+    var lastPrayerTimesError: String?
 
     private let locationService = LocationService.shared
 
@@ -51,6 +53,19 @@ final class PrayerTimesViewModel {
     }
 
     // MARK: - Prayer Time Calculation
+    private let prayerTimesService = PrayerTimesService.shared
+
+    /// Calculation method for the Aladhan API (configurable; persisted in UserDefaults).
+    var calculationMethod: AladhanCalculationMethod {
+        get {
+            let raw = UserDefaults.standard.integer(forKey: "prayer_calculation_method")
+            return AladhanCalculationMethod(rawValue: raw) ?? .ummAlQura
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: "prayer_calculation_method")
+        }
+    }
+
     func calculatePrayerTimes() {
         let location = locationService.currentLocation
         let lat = location?.coordinate.latitude ?? 21.4225
@@ -67,6 +82,33 @@ final class PrayerTimesViewModel {
             reverseGeocode(location!)
         } else {
             locationName = LanguageManager.shared.localized("Makkah (Default)", arabic: "مكة المكرمة (افتراضي)")
+        }
+    }
+
+    /// Fetches prayer times dynamically from Aladhan API (latitude, longitude, current date, method). Falls back to local calculation on error.
+    func fetchPrayerTimes() async {
+        let location = locationService.currentLocation
+        let lat = location?.coordinate.latitude ?? 21.4225
+        let lon = location?.coordinate.longitude ?? 39.8262
+
+        do {
+            let result = try await prayerTimesService.fetchPrayerTimes(
+                date: selectedDate,
+                latitude: lat,
+                longitude: lon,
+                method: calculationMethod
+            )
+            prayerTimes = result.timings
+            lastPrayerTimesError = nil
+            updateLiveActivityIfNeeded()
+            if location != nil {
+                reverseGeocode(location!)
+            } else {
+                locationName = LanguageManager.shared.localized("Makkah (Default)", arabic: "مكة المكرمة (افتراضي)")
+            }
+        } catch {
+            lastPrayerTimesError = (error as? PrayerTimesServiceError)?.errorDescription ?? error.localizedDescription
+            calculatePrayerTimes()
         }
     }
 

@@ -18,7 +18,7 @@ struct PrayerTimesHomeView: View {
             }
             .scrollIndicators(.hidden)
             .refreshable {
-                viewModel.calculatePrayerTimes()
+                await viewModel.fetchPrayerTimes()
             }
             .background(
                 LinearGradient(
@@ -34,6 +34,9 @@ struct PrayerTimesHomeView: View {
             .onAppear {
                 viewModel.requestLocation()
                 viewModel.updateLiveActivityIfNeeded()
+            }
+            .task {
+                await viewModel.fetchPrayerTimes()
             }
             .sheet(isPresented: $showQibla) {
                 QiblaView()
