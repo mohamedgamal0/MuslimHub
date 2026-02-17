@@ -77,6 +77,7 @@ final class SettingsViewModel {
     private func updatePrayerNotifications() async {
         if prayerNotificationsEnabled {
             _ = await requestNotificationPermission()
+            await NotificationService.shared.schedulePrayerNotificationsFromSavedTimes()
         } else {
             await NotificationService.shared.cancelAllPrayerNotifications()
         }

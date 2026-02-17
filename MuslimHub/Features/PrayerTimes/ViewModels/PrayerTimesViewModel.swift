@@ -77,6 +77,7 @@ final class PrayerTimesViewModel {
             longitude: lon
         )
         updateLiveActivityIfNeeded()
+        Task { await saveAndSchedulePrayerNotificationsIfNeeded() }
 
         if location != nil {
             reverseGeocode(location!)
@@ -101,6 +102,7 @@ final class PrayerTimesViewModel {
             prayerTimes = result.timings
             lastPrayerTimesError = nil
             updateLiveActivityIfNeeded()
+            await saveAndSchedulePrayerNotificationsIfNeeded()
             if location != nil {
                 reverseGeocode(location!)
             } else {
@@ -115,6 +117,22 @@ final class PrayerTimesViewModel {
     func requestLocation() {
         locationService.requestPermission()
         locationService.startUpdatingLocation()
+    }
+
+    /// Saves today's prayer times for notification scheduling and schedules Adhan notifications if enabled.
+    private func saveAndSchedulePrayerNotificationsIfNeeded() async {
+        guard Calendar.current.isDateInToday(selectedDate) else { return }
+        let prayerOnly = prayerTimes.filter { $0.prayer.isPrayer }
+        guard !prayerOnly.isEmpty else { return }
+
+        let saved = prayerOnly.map { SavedPrayerTime(prayer: $0.prayer.rawValue, time: $0.time.timeIntervalSince1970) }
+        await NotificationService.shared.savePrayerTimesForScheduling(saved)
+
+        guard SettingsViewModel.shared.prayerNotificationsEnabled else { return }
+        let items: [(identifier: String, prayerName: String, fireDate: Date)] = prayerOnly.map { entry in
+            (identifier: entry.prayer.rawValue.lowercased(), prayerName: entry.prayer.localizedName, fireDate: entry.time)
+        }
+        await NotificationService.shared.schedulePrayerNotifications(items: items)
     }
 
     private func reverseGeocode(_ location: CLLocation) {

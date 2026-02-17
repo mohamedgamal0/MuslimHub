@@ -1,6 +1,11 @@
 import Foundation
 import UserNotifications
 
+struct SavedPrayerTime: Codable {
+    let prayer: String
+    let time: Double
+}
+
 actor NotificationService {
     static let shared = NotificationService()
 
@@ -22,33 +27,69 @@ actor NotificationService {
         return settings.authorizationStatus
     }
 
-    // MARK: - Prayer Time Notifications
-    func schedulePrayerNotification(
-        prayerName: String,
-        time: Date,
-        identifier: String
-    ) async {
-        let content = UNMutableNotificationContent()
-        content.title = "Prayer Time"
-        content.body = "It's time for \(prayerName) prayer"
-        content.sound = .default
-        content.categoryIdentifier = "PRAYER_REMINDER"
+    // MARK: - Prayer Time Notifications (Adhan sound)
+
+    /// Custom Adhan sound for prayer notifications. Add `adhan.caf` (≤30s) to the app bundle to use it; otherwise default sound is used.
+    private static var adhanSound: UNNotificationSound {
+        if Bundle.main.url(forResource: "adhan", withExtension: "caf") != nil {
+            return UNNotificationSound(named: UNNotificationSoundName("adhan.caf"))
+        }
+        if Bundle.main.url(forResource: "adhan", withExtension: "wav") != nil {
+            return UNNotificationSound(named: UNNotificationSoundName("adhan.wav"))
+        }
+        return .default
+    }
+
+    /// Schedules one-time prayer notifications at the given times, using Adhan sound. Only future times are scheduled. Call this when prayer times are loaded for today.
+    func schedulePrayerNotifications(items: [(identifier: String, prayerName: String, fireDate: Date)]) async {
+        cancelAllPrayerNotifications()
 
         let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: time)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let now = Date()
 
-        let request = UNNotificationRequest(
-            identifier: "prayer_\(identifier)",
-            content: content,
-            trigger: trigger
-        )
+        for item in items {
+            guard item.fireDate > now else { continue }
 
-        do {
-            try await UNUserNotificationCenter.current().add(request)
-        } catch {
-            print("Failed to schedule prayer notification: \(error)")
+            let content = UNMutableNotificationContent()
+            content.title = "Prayer Time"
+            content.body = "It's time for \(item.prayerName) prayer"
+            content.sound = Self.adhanSound
+            content.categoryIdentifier = "PRAYER_REMINDER"
+
+            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: item.fireDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+
+            let request = UNNotificationRequest(
+                identifier: "prayer_\(item.identifier)",
+                content: content,
+                trigger: trigger
+            )
+
+            do {
+                try await UNUserNotificationCenter.current().add(request)
+            } catch {
+                print("Failed to schedule prayer notification \(item.identifier): \(error)")
+            }
         }
+    }
+
+    /// Schedules prayer notifications from the last saved times (e.g. when user enables Prayer Notifications in Settings). Uses Adhan sound.
+    func schedulePrayerNotificationsFromSavedTimes() async {
+        let key = "saved_prayer_times_for_notifications"
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let saved = try? JSONDecoder().decode([SavedPrayerTime].self, from: data) else { return }
+
+        let items: [(identifier: String, prayerName: String, fireDate: Date)] = saved.map { s in
+            (identifier: s.prayer.lowercased(), prayerName: s.prayer, fireDate: Date(timeIntervalSince1970: s.time))
+        }
+        await schedulePrayerNotifications(items: items)
+    }
+
+    /// Call from ViewModel when prayer times are updated for today, so enabling notifications later can use them.
+    func savePrayerTimesForScheduling(_ entries: [SavedPrayerTime]) {
+        let key = "saved_prayer_times_for_notifications"
+        guard let encoded = try? JSONEncoder().encode(entries) else { return }
+        UserDefaults.standard.set(encoded, forKey: key)
     }
 
     // MARK: - Doaa Reminders
