@@ -41,6 +41,28 @@ final class HadithViewModel {
         isLoadingSections = true
         sectionsError = nil
 
+        if let slug = collection.bookSlugHadithAPI {
+            do {
+                let url = HadithAPICom.chapters(bookSlug: slug)
+                let response = try await network.fetch(HadithAPIComChaptersResponse.self, from: url)
+                let list = response.list.sorted { ($0.chapterNumber?.intValue ?? $0.chapter_number?.intValue ?? 0) < ($1.chapterNumber?.intValue ?? $1.chapter_number?.intValue ?? 0) }
+                let parsed = list.map { ch in
+                    HadithSection(
+                        id: "\(collection.id)_\(ch.sectionNumber)",
+                        number: ch.sectionNumber,
+                        name: ch.sectionName,
+                        arabicName: nil
+                    )
+                }
+                sectionsCache[cacheKey] = parsed
+                sections = parsed
+            } catch {
+                sectionsError = error.localizedDescription
+            }
+            isLoadingSections = false
+            return
+        }
+
         do {
             let url = HadithAPI.editionInfo(name: collection.editionKey)
             let response = try await network.fetch(HadithEditionResponse.self, from: url)
@@ -89,6 +111,32 @@ final class HadithViewModel {
 
         isLoadingHadiths = true
         hadithsError = nil
+
+        if let slug = collection.bookSlugHadithAPI {
+            do {
+                let url = HadithAPICom.hadiths(bookSlug: slug, chapter: section.number)
+                let response = try await network.fetch(HadithAPIComHadithsResponse.self, from: url)
+                let items: [HadithItem] = response.list.compactMap { h in
+                    let text = h.englishText ?? h.arabicText ?? ""
+                    guard !text.isEmpty else { return nil }
+                    return HadithItem(
+                        id: h.id ?? h.number,
+                        number: h.number,
+                        text: text,
+                        arabicText: h.arabicText,
+                        bookNumber: section.number,
+                        grade: h.status,
+                        collectionName: collection.name
+                    )
+                }
+                hadithsCache[cacheKey] = items
+                hadiths = items
+            } catch {
+                hadithsError = error.localizedDescription
+            }
+            isLoadingHadiths = false
+            return
+        }
 
         do {
             let url = HadithAPI.editionSection(name: collection.editionKey, section: section.number)

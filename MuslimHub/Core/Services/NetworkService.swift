@@ -98,7 +98,27 @@ enum QuranAPI {
     }
 }
 
-// MARK: - Hadith API Endpoints
+// MARK: - Hadith API – hadithapi.com (requires API key)
+enum HadithAPICom {
+    static let base = "https://hadithapi.com/public/api"
+
+    /// API key for hadithapi.com (get your key at https://hadithapi.com/public/profile)
+    static let apiKey = "$2y$10$0Yext5TV855ZN5VacZst1uOOelrwxpgR1wseFFfGpVYtITwKGmyW"
+
+    static func chapters(bookSlug: String) -> String {
+        let slug = bookSlug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? bookSlug
+        let key = apiKey.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? apiKey
+        return "\(base)/\(slug)/chapters?apiKey=\(key)"
+    }
+
+    static func hadiths(bookSlug: String, chapter: Int, paginate: Int = 500) -> String {
+        let key = apiKey.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? apiKey
+        let slug = bookSlug.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? bookSlug
+        return "\(base)/hadiths?apiKey=\(key)&book=\(slug)&chapter=\(chapter)&paginate=\(paginate)"
+    }
+}
+
+// MARK: - Hadith API fallback (fawazahmed0 CDN – no key)
 enum HadithAPI {
     static let baseURL = "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1"
 
@@ -107,7 +127,7 @@ enum HadithAPI {
     }
 
     static func editionSection(name: String, section: Int) -> String {
-        "\(baseURL)/editions/\(name)/\(section).json"
+        "\(baseURL)/editions/\(name)/sections/\(section).json"
     }
 
     static func fullEdition(name: String) -> String {

@@ -7,6 +7,7 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 appearanceSection
+                languageSection
                 notificationsSection
                 doaaReminderSection
                 aboutSection
@@ -43,6 +44,39 @@ struct SettingsView: View {
             .tint(IslamicColors.primaryGreenFallback)
         } header: {
             Text(L10n.appearance)
+                .font(AppTypography.englishSmall)
+        }
+    }
+
+    // MARK: - Language
+    private var languageSection: some View {
+        Section {
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Label {
+                    Text(L10n.language)
+                        .font(AppTypography.englishBody)
+                } icon: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(LinearGradient(
+                                colors: [.blue, .cyan],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ))
+                            .frame(width: 28, height: 28)
+
+                        Image(systemName: "globe")
+                            .font(.system(size: 14))
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
+        } header: {
+            Text(L10n.general)
                 .font(AppTypography.englishSmall)
         }
     }
