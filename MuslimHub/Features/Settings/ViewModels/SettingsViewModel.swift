@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @Observable
 final class SettingsViewModel {
@@ -8,6 +9,20 @@ final class SettingsViewModel {
     var isDarkMode: Bool {
         didSet {
             UserDefaults.standard.set(isDarkMode, forKey: "dark_mode")
+            Self.applyAppearance(dark: isDarkMode)
+        }
+    }
+
+    /// Apply dark/light mode to all windows so it works on both simulator and real device.
+    static func applyAppearance(dark: Bool) {
+        let style: UIUserInterfaceStyle = dark ? .dark : .light
+        DispatchQueue.main.async {
+            for scene in UIApplication.shared.connectedScenes {
+                guard let windowScene = scene as? UIWindowScene else { continue }
+                for window in windowScene.windows {
+                    window.overrideUserInterfaceStyle = style
+                }
+            }
         }
     }
 
@@ -67,6 +82,8 @@ final class SettingsViewModel {
             components.minute = 0
             self.eveningReminderTime = Calendar.current.date(from: components) ?? Date()
         }
+
+        Self.applyAppearance(dark: isDarkMode)
     }
 
     // MARK: - Notification Actions

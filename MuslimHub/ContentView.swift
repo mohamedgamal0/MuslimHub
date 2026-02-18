@@ -31,6 +31,7 @@ struct ContentView: View {
         .preferredColorScheme(settingsVM.isDarkMode ? .dark : nil)
         .environment(\.layoutDirection, languageManager.layoutDirection)
         .onAppear {
+            SettingsViewModel.applyAppearance(dark: settingsVM.isDarkMode)
             LiveActivityManager.shared.updateFromAppGroup()
             // Retry after a short delay so Live Activity can show on Lock Screen / Dynamic Island
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
