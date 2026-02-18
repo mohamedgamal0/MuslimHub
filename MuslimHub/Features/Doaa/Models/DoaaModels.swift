@@ -84,7 +84,6 @@ struct Doaa: Identifiable, Codable, Hashable {
     let category: DoaaCategory
     let source: String
     let repeatCount: Int
-    var isFavorite: Bool
 
     init(
         textArabic: String,
@@ -93,7 +92,6 @@ struct Doaa: Identifiable, Codable, Hashable {
         category: DoaaCategory,
         source: String = "",
         repeatCount: Int = 1,
-        isFavorite: Bool = false,
         id: UUID? = nil
     ) {
         self.id = id ?? UUID()
@@ -103,6 +101,5 @@ struct Doaa: Identifiable, Codable, Hashable {
         self.category = category
         self.source = source
         self.repeatCount = repeatCount
-        self.isFavorite = isFavorite
     }
 }

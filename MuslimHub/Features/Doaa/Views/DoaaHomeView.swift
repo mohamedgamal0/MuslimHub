@@ -9,15 +9,12 @@ struct DoaaHomeView: View {
             ScrollView {
                 VStack(spacing: AppSpacing.lg) {
                     headerSection
-                    filterSection
+                    countSection
                     categoriesGrid
                 }
                 .padding(.bottom, 100)
             }
             .scrollIndicators(.hidden)
-            .refreshable {
-                viewModel.loadFavorites()
-            }
             .background(Color(.systemGroupedBackground))
             .navigationDestination(item: $selectedCategory) { category in
                 DoaaCategoryView(category: category, viewModel: viewModel)
@@ -59,35 +56,10 @@ struct DoaaHomeView: View {
         .fadeIn()
     }
 
-    // MARK: - Filter
-    private var filterSection: some View {
+    // MARK: - Count
+    private var countSection: some View {
         HStack {
-            Button {
-                withAnimation(.spring(response: 0.3)) {
-                    viewModel.showFavoritesOnly.toggle()
-                }
-            } label: {
-                HStack(spacing: AppSpacing.xs) {
-                    Image(systemName: viewModel.showFavoritesOnly ? "heart.fill" : "heart")
-                        .foregroundStyle(viewModel.showFavoritesOnly ? .red : .secondary)
-                        .symbolEffect(.bounce, value: viewModel.showFavoritesOnly)
-
-                    Text(L10n.favorites)
-                        .font(AppTypography.englishCaption)
-                        .foregroundStyle(viewModel.showFavoritesOnly ? .primary : .secondary)
-                }
-                .padding(.horizontal, AppSpacing.md)
-                .padding(.vertical, AppSpacing.sm)
-                .background(
-                    Capsule()
-                        .fill(viewModel.showFavoritesOnly
-                              ? Color.red.opacity(0.1)
-                              : Color(.secondarySystemBackground))
-                )
-            }
-
             Spacer()
-
             Text("\(viewModel.allDoaas.count) \(LanguageManager.shared.localized("supplications", arabic: "دعاء"))")
                 .font(AppTypography.englishSmall)
                 .foregroundStyle(.secondary)

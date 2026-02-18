@@ -43,7 +43,6 @@ struct DoaaCardView: View {
         Button(action: onTap) {
             VStack(alignment: .trailing, spacing: AppSpacing.md) {
                 HStack {
-                    favoriteButton
                     Spacer()
                     repeatBadge
                 }
@@ -83,19 +82,6 @@ struct DoaaCardView: View {
             .islamicShadow()
         }
         .buttonStyle(SpringButtonStyle())
-    }
-
-    private var favoriteButton: some View {
-        Button {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.5)) {
-                viewModel.toggleFavorite(doaa)
-            }
-        } label: {
-            Image(systemName: doaa.isFavorite ? "heart.fill" : "heart")
-                .font(.system(size: 20))
-                .foregroundStyle(doaa.isFavorite ? .red : .secondary)
-                .symbolEffect(.bounce, value: doaa.isFavorite)
-        }
     }
 
     private var repeatBadge: some View {

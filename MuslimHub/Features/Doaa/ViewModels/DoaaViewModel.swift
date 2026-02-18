@@ -6,11 +6,9 @@ final class DoaaViewModel {
     var allDoaas: [Doaa] = []
     var selectedCategory: DoaaCategory?
     var searchText = ""
-    var showFavoritesOnly = false
 
     init() {
         allDoaas = AdhkarLoader.loadFromBundle()
-        loadFavorites()
     }
 
     // MARK: - Computed
@@ -20,10 +18,6 @@ final class DoaaViewModel {
 
     var filteredDoaas: [Doaa] {
         var result = allDoaas
-
-        if showFavoritesOnly {
-            result = result.filter { $0.isFavorite }
-        }
 
         if let category = selectedCategory {
             result = result.filter { $0.category == category }
@@ -49,29 +43,9 @@ final class DoaaViewModel {
     }
 
     // MARK: - Actions
-    func toggleFavorite(_ doaa: Doaa) {
-        if let index = allDoaas.firstIndex(where: { $0.id == doaa.id }) {
-            allDoaas[index].isFavorite.toggle()
-            saveFavorites()
-        }
-    }
-
     func selectCategory(_ category: DoaaCategory?) {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
             selectedCategory = category
-        }
-    }
-
-    // MARK: - Persistence
-    private func saveFavorites() {
-        let favoriteIds = allDoaas.filter(\.isFavorite).map(\.id.uuidString)
-        UserDefaults.standard.set(favoriteIds, forKey: "doaa_favorites")
-    }
-
-    func loadFavorites() {
-        guard let savedIds = UserDefaults.standard.stringArray(forKey: "doaa_favorites") else { return }
-        for i in allDoaas.indices {
-            allDoaas[i].isFavorite = savedIds.contains(allDoaas[i].id.uuidString)
         }
     }
 }

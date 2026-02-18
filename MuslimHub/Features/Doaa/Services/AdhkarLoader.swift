@@ -66,7 +66,6 @@ enum AdhkarLoader {
                     category: category,
                     source: source,
                     repeatCount: max(1, item.repeatCount),
-                    isFavorite: false,
                     id: id
                 )
                 result.append(doaa)
@@ -92,7 +91,6 @@ enum AdhkarLoader {
                     category: category,
                     source: "Hisnul Muslim",
                     repeatCount: max(1, item.count),
-                    isFavorite: false,
                     id: id
                 )
                 result.append(doaa)

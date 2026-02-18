@@ -36,15 +36,6 @@ struct DoaaDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        viewModel.toggleFavorite(doaa)
-                    } label: {
-                        Image(systemName: doaa.isFavorite ? "heart.fill" : "heart")
-                            .foregroundStyle(doaa.isFavorite ? .red : .secondary)
-                    }
-                }
             }
             .overlay {
                 if showCompletion {
