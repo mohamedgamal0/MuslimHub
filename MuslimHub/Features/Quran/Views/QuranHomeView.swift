@@ -7,24 +7,27 @@ struct QuranHomeView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    headerSection
+            GeometryReader { geo in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        headerSection
 
-                    if viewModel.isLoadingSurahs && viewModel.surahs.isEmpty {
-                        loadingView
-                    } else if let error = viewModel.surahsError, viewModel.surahs.isEmpty {
-                        errorView(error)
-                    } else {
-                        searchBar
-                        surahListSection
+                        if viewModel.isLoadingSurahs && viewModel.surahs.isEmpty {
+                            loadingView
+                        } else if let error = viewModel.surahsError, viewModel.surahs.isEmpty {
+                            errorView(error)
+                        } else {
+                            searchBar
+                            surahListSection
+                        }
                     }
+                    .padding(.top, -geo.safeAreaInsets.top)
                 }
-            }
-            .scrollIndicators(.hidden)
-            .scrollDismissesKeyboard(.immediately)
-            .refreshable {
-                await viewModel.refreshSurahs()
+                .scrollIndicators(.hidden)
+                .scrollDismissesKeyboard(.immediately)
+                .refreshable {
+                    await viewModel.refreshSurahs()
+                }
             }
             .background(Color(.systemGroupedBackground))
             .navigationDestination(item: $selectedSurah) { surah in
@@ -33,29 +36,18 @@ struct QuranHomeView: View {
             .sheet(isPresented: $showBookmarks) {
                 BookmarksSheet(viewModel: viewModel, selectedSurah: $selectedSurah)
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showBookmarks = true
-                    } label: {
-                        Image(systemName: "bookmark.fill")
-                            .foregroundStyle(IslamicColors.goldFallback)
-                    }
-                }
-            }
             .task {
                 await viewModel.fetchSurahs()
             }
         }
     }
 
-    // MARK: - Header
+    // MARK: - Header (starts at status bar, bookmark inside header)
     private var headerSection: some View {
-        ZStack(alignment: .bottomLeading) {
+        ZStack(alignment: .topLeading) {
             AppGradients.islamicGreen
-                .frame(height: 180)
                 .overlay(
-                    IslamicPatternView(color: .white.opacity(0.06), lineWidth: 0.5)
+                    IslamicPatternView(color: .white.opacity(0.04), lineWidth: 0.4)
                 )
                 .clipShape(
                     UnevenRoundedRectangle(
@@ -66,21 +58,32 @@ struct QuranHomeView: View {
 
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 HStack {
-                    CrescentMoonView(size: 30, color: IslamicColors.goldFallback)
+                    CrescentMoonView(size: 26, color: IslamicColors.goldFallback)
                     Spacer()
+                    Button {
+                        showBookmarks = true
+                    } label: {
+                        Image(systemName: "bookmark.fill")
+                            .font(.system(size: 20))
+                            .foregroundStyle(IslamicColors.goldFallback)
+                    }
                 }
 
                 Text("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
-                    .font(AppTypography.arabicBody)
-                    .foregroundStyle(.white)
+                    .font(.system(size: 15, weight: .regular, design: .serif))
+                    .foregroundStyle(.white.opacity(0.95))
 
                 Text(L10n.quran)
-                    .font(AppTypography.englishTitle)
-                    .foregroundStyle(.white.opacity(0.9))
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
             }
             .padding(.horizontal, AppSpacing.lg)
-            .padding(.bottom, AppSpacing.lg)
+            .padding(.top, 56)
+            .padding(.bottom, AppSpacing.xl)
         }
+        .frame(minHeight: 220)
+        .frame(maxWidth: .infinity)
+        .ignoresSafeArea(edges: .top)
         .fadeIn()
     }
 
