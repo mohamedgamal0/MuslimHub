@@ -13,6 +13,8 @@ final class PrayerTimesViewModel {
     var lastPrayerTimesError: String?
 
     private let locationService = LocationService.shared
+    private var lastLocationFetchTime: Date?
+    private let locationFetchDebounceInterval: TimeInterval = 2.0
 
     // MARK: - Computed
     var nextPrayer: PrayerTimeEntry? {
@@ -117,6 +119,21 @@ final class PrayerTimesViewModel {
     func requestLocation() {
         locationService.requestPermission()
         locationService.startUpdatingLocation()
+    }
+
+    /// Call from view onAppear so prayer times and location name update automatically when location changes.
+    func startObservingLocationUpdates() {
+        locationService.onLocationUpdate = { [weak self] in
+            guard let self else { return }
+            let now = Date()
+            if let last = self.lastLocationFetchTime, now.timeIntervalSince(last) < self.locationFetchDebounceInterval {
+                return
+            }
+            self.lastLocationFetchTime = now
+            Task { @MainActor in
+                await self.fetchPrayerTimes()
+            }
+        }
     }
 
     /// Saves today's prayer times for notification scheduling and schedules Adhan notifications if enabled.

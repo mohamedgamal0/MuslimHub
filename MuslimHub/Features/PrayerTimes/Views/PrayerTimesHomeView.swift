@@ -33,6 +33,7 @@ struct PrayerTimesHomeView: View {
             .ignoresSafeArea(edges: .top)
             .onAppear {
                 viewModel.requestLocation()
+                viewModel.startObservingLocationUpdates()
                 viewModel.updateLiveActivityIfNeeded()
             }
             .task {

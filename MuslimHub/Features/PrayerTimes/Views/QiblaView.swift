@@ -1,9 +1,13 @@
 import SwiftUI
 import CoreLocation
+import UIKit
+
+private let qiblaAlignmentThresholdDegrees: Double = 6
 
 struct QiblaView: View {
     @State private var locationService = LocationService.shared
     @State private var animatedRotation: Double = 0
+    @State private var hasVibratedForCurrentAlignment = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -18,14 +22,22 @@ struct QiblaView: View {
                 Spacer()
             }
             .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
                 AppGradients.islamicGreen
-                    .ignoresSafeArea()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .overlay(
                         IslamicPatternView(color: .white.opacity(0.04), lineWidth: 0.5)
-                            .ignoresSafeArea()
                     )
+                    .ignoresSafeArea(edges: .all)
             )
+            .presentationBackground {
+                AppGradients.islamicGreen
+                    .overlay(
+                        IslamicPatternView(color: .white.opacity(0.04), lineWidth: 0.5)
+                    )
+                    .ignoresSafeArea(edges: .all)
+            }
             .navigationTitle(L10n.qiblaDirection)
             .navigationBarTitleDisplayMode(.inline)
             .toolbarColorScheme(.dark, for: .navigationBar)
@@ -48,6 +60,14 @@ struct QiblaView: View {
             .onChange(of: locationService.qiblaRelativeToNorth) { _, newValue in
                 withAnimation(.easeInOut(duration: 0.3)) {
                     animatedRotation = newValue
+                }
+                let normalized = normalizeAngle(newValue)
+                let isAligned = abs(normalized) <= qiblaAlignmentThresholdDegrees
+                if isAligned, !hasVibratedForCurrentAlignment {
+                    triggerQiblaAlignedHaptic()
+                    hasVibratedForCurrentAlignment = true
+                } else if !isAligned {
+                    hasVibratedForCurrentAlignment = false
                 }
             }
         }
@@ -168,6 +188,19 @@ struct QiblaView: View {
                 .fill(.white.opacity(0.1))
         )
         .fadeIn(delay: 0.3)
+    }
+
+    // MARK: - Alignment haptic
+    private func normalizeAngle(_ degrees: Double) -> Double {
+        var a = degrees
+        while a > 180 { a -= 360 }
+        while a < -180 { a += 360 }
+        return a
+    }
+
+    private func triggerQiblaAlignedHaptic() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
     }
 }
 
