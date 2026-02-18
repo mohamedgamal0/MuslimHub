@@ -150,4 +150,27 @@ actor NotificationService {
         UNUserNotificationCenter.current()
             .removePendingNotificationRequests(withIdentifiers: ["doaa_morning", "doaa_evening"])
     }
+
+    /// Schedules a one-time Doaa reminder in 10 seconds for testing.
+    func scheduleTestDoaaReminder() async {
+        let content = UNMutableNotificationContent()
+        content.title = "Doaa Reminder (Test)"
+        content.body = "Time for remembrance — this is a test notification."
+        content.sound = .default
+        content.categoryIdentifier = "DOAA_REMINDER"
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+
+        let request = UNNotificationRequest(
+            identifier: "doaa_test",
+            content: content,
+            trigger: trigger
+        )
+
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+        } catch {
+            print("Failed to schedule test doaa reminder: \(error)")
+        }
+    }
 }
