@@ -101,31 +101,6 @@ actor NotificationService {
         UserDefaults.standard.set(encoded, forKey: key)
     }
 
-    /// Schedules a one-time test notification in 10 seconds with the same Adhan sound. Use to verify notifications without waiting for prayer time.
-    func scheduleTestAdhanNotification() async {
-        let granted = await requestPermission()
-        guard granted else { return }
-
-        let content = UNMutableNotificationContent()
-        content.title = "Prayer Time"
-        content.body = "Test — It's time for Dhuhr prayer"
-        content.sound = Self.adhanSound
-        content.categoryIdentifier = "PRAYER_REMINDER"
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 7, repeats: false)
-        let request = UNNotificationRequest(
-            identifier: "prayer_test_adhan",
-            content: content,
-            trigger: trigger
-        )
-
-        do {
-            try await UNUserNotificationCenter.current().add(request)
-        } catch {
-            print("Failed to schedule test Adhan notification: \(error)")
-        }
-    }
-
     // MARK: - Doaa Reminders
     func scheduleDoaaReminder(
         title: String,
