@@ -9,7 +9,7 @@ struct SurahDetailView: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: 0) {
+                VStack(spacing: 10) {
                     surahHeader
 
                     if viewModel.isLoadingDetail {
@@ -37,13 +37,16 @@ struct SurahDetailView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(Color(.systemBackground), for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                VStack(spacing: 0) {
+                VStack(spacing: 2) {
                     Text(surahInfo.name)
-                        .font(.system(size: 18, weight: .bold, design: .serif))
+                        .font(.system(size: 20, weight: .bold, design: .serif))
+                        .foregroundStyle(.primary)
                     Text(surahInfo.englishName)
-                        .font(AppTypography.englishSmall)
+                        .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.secondary)
                 }
             }
@@ -68,25 +71,30 @@ struct SurahDetailView: View {
         ZStack {
             RoundedRectangle(cornerRadius: AppCornerRadius.large)
                 .fill(AppGradients.islamicGreen)
-                .frame(height: 160)
+                .frame(minHeight: 220)
                 .overlay(
-                    IslamicPatternView(color: .white.opacity(0.06), lineWidth: 0.5)
+                    IslamicPatternView(color: .white.opacity(0.08), lineWidth: 0.5)
                         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.large))
                 )
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppCornerRadius.large)
+                        .strokeBorder(.white.opacity(0.15), lineWidth: 1)
+                )
 
-            VStack(spacing: AppSpacing.sm) {
+            VStack(spacing: AppSpacing.md) {
                 Text(surahInfo.name)
-                    .font(AppTypography.arabicLarge)
+                    .font(.system(size: 28, weight: .bold, design: .serif))
                     .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
 
                 Text(surahInfo.englishNameTranslation)
-                    .font(AppTypography.englishSubtitle)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.9))
 
-                IslamicDivider(color: .white.opacity(0.3))
-                    .frame(width: 200)
+                IslamicDivider(color: .white.opacity(0.35))
+                    .frame(width: 220)
 
-                HStack(spacing: AppSpacing.lg) {
+                HStack(spacing: AppSpacing.xl) {
                     InfoBadge(
                         label: surahInfo.revelationLabel,
                         value: "\(surahInfo.number)",
@@ -101,10 +109,19 @@ struct SurahDetailView: View {
                     )
                     .foregroundStyle(.white)
                 }
+                .padding(.horizontal, AppSpacing.lg)
+                .padding(.vertical, AppSpacing.sm)
+                .background(
+                    Capsule()
+                        .fill(.white.opacity(0.12))
+                )
             }
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.vertical, AppSpacing.lg)
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.top, AppSpacing.sm)
+        .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 4)
         .fadeIn()
     }
 
@@ -123,7 +140,7 @@ struct SurahDetailView: View {
 
     // MARK: - Ayahs List
     private func ayahsList(_ detail: SurahDetail) -> some View {
-        LazyVStack(spacing: AppSpacing.sm) {
+        LazyVStack(spacing: 0) {
             ForEach(Array(detail.ayahs.enumerated()), id: \.element.id) { index, ayah in
                 AyahCardView(
                     ayah: ayah,
@@ -136,10 +153,44 @@ struct SurahDetailView: View {
                 )
                 .id(ayah.id)
                 .slideIn(delay: min(Double(index) * 0.02, 0.4), from: .bottom)
+
+                if index < detail.ayahs.count - 1 {
+                    ayahSeparator
+                }
             }
         }
         .padding(.horizontal, AppSpacing.md)
         .padding(.bottom, viewModel.isPlaying ? 120 : 100)
+    }
+
+    // MARK: - Ayah Separator (gold line + icon between verses)
+    private var ayahSeparator: some View {
+        HStack(spacing: AppSpacing.sm) {
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [Color.clear, IslamicColors.goldFallback.opacity(0.6)],
+                        startPoint: .leading,
+                        endPoint: .center
+                    )
+                )
+                .frame(height: 1)
+
+            Image(systemName: "star.fill")
+                .font(.system(size: 8))
+                .foregroundStyle(IslamicColors.goldFallback)
+
+            Rectangle()
+                .fill(
+                    LinearGradient(
+                        colors: [IslamicColors.goldFallback.opacity(0.6), Color.clear],
+                        startPoint: .center,
+                        endPoint: .trailing
+                    )
+                )
+                .frame(height: 1)
+        }
+        .padding(.vertical, AppSpacing.md)
     }
 
     // MARK: - Loading
