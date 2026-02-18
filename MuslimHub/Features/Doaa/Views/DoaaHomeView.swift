@@ -6,15 +6,18 @@ struct DoaaHomeView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: AppSpacing.lg) {
-                    headerSection
-                    countSection
-                    categoriesGrid
+            GeometryReader { geo in
+                ScrollView {
+                    VStack(spacing: AppSpacing.lg) {
+                        headerSection
+                        countSection
+                        categoriesGrid
+                    }
+                    .padding(.top, -geo.safeAreaInsets.top)
+                    .padding(.bottom, 100)
                 }
-                .padding(.bottom, 100)
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
             .background(Color(.systemGroupedBackground))
             .navigationDestination(item: $selectedCategory) { category in
                 DoaaCategoryView(category: category, viewModel: viewModel)
@@ -22,11 +25,10 @@ struct DoaaHomeView: View {
         }
     }
 
-    // MARK: - Header
+    // MARK: - Header (solid color, starts from status bar)
     private var headerSection: some View {
         ZStack(alignment: .bottomLeading) {
-            AppGradients.tealWave
-                .frame(height: 180)
+            IslamicColors.primaryGreenFallback
                 .overlay(
                     IslamicPatternView(color: .white.opacity(0.06), lineWidth: 0.5)
                 )
@@ -51,8 +53,12 @@ struct DoaaHomeView: View {
                     .foregroundStyle(.white.opacity(0.85))
             }
             .padding(.horizontal, AppSpacing.lg)
+            .padding(.top, 56)
             .padding(.bottom, AppSpacing.lg)
         }
+        .frame(minHeight: 250)
+        .frame(maxWidth: .infinity)
+        .ignoresSafeArea(edges: .top)
         .fadeIn()
     }
 
