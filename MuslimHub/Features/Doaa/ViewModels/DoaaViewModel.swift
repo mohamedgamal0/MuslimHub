@@ -3,10 +3,15 @@ import SwiftUI
 @Observable
 final class DoaaViewModel {
     // MARK: - Properties
-    var allDoaas: [Doaa] = DoaaData.allDoaas
+    var allDoaas: [Doaa] = []
     var selectedCategory: DoaaCategory?
     var searchText = ""
     var showFavoritesOnly = false
+
+    init() {
+        allDoaas = AdhkarLoader.loadFromBundle()
+        loadFavorites()
+    }
 
     // MARK: - Computed
     var categories: [DoaaCategory] {

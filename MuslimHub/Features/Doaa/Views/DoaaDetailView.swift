@@ -230,8 +230,14 @@ struct DoaaDetailView: View {
 }
 
 #Preview {
-    DoaaDetailView(
-        doaa: DoaaData.morningAzkar[0],
-        viewModel: DoaaViewModel()
+    let viewModel = DoaaViewModel()
+    let doaa = viewModel.allDoaas.first ?? Doaa(
+        textArabic: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ",
+        textEnglish: "We have reached the morning and at this very time the whole kingdom belongs to Allah.",
+        transliteration: "Asbahna wa asbahal-mulku lillah.",
+        category: .morning,
+        source: "Abu Dawud",
+        repeatCount: 1
     )
+    return DoaaDetailView(doaa: doaa, viewModel: viewModel)
 }

@@ -4,6 +4,7 @@ import Foundation
 enum DoaaCategory: String, CaseIterable, Identifiable, Codable {
     case morning = "morning"
     case evening = "evening"
+    case postPrayer = "postPrayer"
     case travel = "travel"
     case health = "health"
     case general = "general"
@@ -17,6 +18,7 @@ enum DoaaCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .morning: return "Morning Azkar"
         case .evening: return "Evening Azkar"
+        case .postPrayer: return "Post Prayer"
         case .travel: return "Travel"
         case .health: return "Health & Healing"
         case .general: return "General"
@@ -30,6 +32,7 @@ enum DoaaCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .morning: return "أذكار الصباح"
         case .evening: return "أذكار المساء"
+        case .postPrayer: return "أذكار بعد الصلاة"
         case .travel: return "دعاء السفر"
         case .health: return "دعاء الشفاء"
         case .general: return "أدعية عامة"
@@ -47,6 +50,7 @@ enum DoaaCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .morning: return "sun.and.horizon.fill"
         case .evening: return "moon.stars.fill"
+        case .postPrayer: return "building.columns.fill"
         case .travel: return "airplane"
         case .health: return "heart.fill"
         case .general: return "hands.sparkles.fill"
@@ -60,6 +64,7 @@ enum DoaaCategory: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .morning: return ["green", "teal"]
         case .evening: return ["indigo", "purple"]
+        case .postPrayer: return ["mint", "teal"]
         case .travel: return ["blue", "cyan"]
         case .health: return ["pink", "red"]
         case .general: return ["green", "mint"]
@@ -88,9 +93,10 @@ struct Doaa: Identifiable, Codable, Hashable {
         category: DoaaCategory,
         source: String = "",
         repeatCount: Int = 1,
-        isFavorite: Bool = false
+        isFavorite: Bool = false,
+        id: UUID? = nil
     ) {
-        self.id = UUID()
+        self.id = id ?? UUID()
         self.textArabic = textArabic
         self.textEnglish = textEnglish
         self.transliteration = transliteration
