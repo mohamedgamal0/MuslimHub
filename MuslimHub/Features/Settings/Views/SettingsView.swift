@@ -109,9 +109,61 @@ struct SettingsView: View {
                 }
             }
             .tint(IslamicColors.primaryGreenFallback)
+
+            Button {
+                Task {
+                    await NotificationService.shared.scheduleTestAdhanNotification()
+                }
+            } label: {
+                Label {
+                    Text(LanguageManager.shared.localized("Test Adhan notification", arabic: "اختبار إشعار الأذان"))
+                        .font(AppTypography.englishBody)
+                } icon: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(AppGradients.islamicGreen)
+                            .frame(width: 28, height: 28)
+                        Image(systemName: "speaker.wave.2.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
+
+            Button {
+                AdhanSoundPlayer.shared.playNow()
+            } label: {
+                Label {
+                    Text(LanguageManager.shared.localized("Play Adhan now", arabic: "تشغيل الأذان الآن"))
+                        .font(AppTypography.englishBody)
+                } icon: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(AppGradients.islamicGreen)
+                            .frame(width: 28, height: 28)
+                        Image(systemName: "play.circle.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
         } header: {
             Text(L10n.notifications)
                 .font(AppTypography.englishSmall)
+        } footer: {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(LanguageManager.shared.localized("Test notification fires in 10 seconds with the same sound as prayer time alerts.", arabic: "يُطلق الإشعار التجريبي بعد 10 ثوانٍ بنفس صوت إشعارات أوقات الصلاة."))
+                    .font(AppTypography.englishSmall)
+                if NotificationService.isCustomAdhanSoundInBundle() {
+                    Label(LanguageManager.shared.localized("Custom Adhan sound: found", arabic: "صوت الأذان المخصص: موجود"), systemImage: "checkmark.circle.fill")
+                        .font(AppTypography.englishSmall)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text(LanguageManager.shared.localized("Custom Adhan: not found. Add adhanNotification.mp3 to the app target (Target Membership → MuslimHub). Tap \"Play Adhan now\" to test.", arabic: "صوت الأذان المخصص: غير موجود. أضف adhanNotification.mp3 للتطبيق. اضغط «تشغيل الأذان الآن» للاختبار."))
+                        .font(AppTypography.englishSmall)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
     }
 

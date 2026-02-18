@@ -29,15 +29,24 @@ actor NotificationService {
 
     // MARK: - Prayer Time Notifications (Adhan sound)
 
-    /// Custom Adhan sound for prayer notifications. Add `adhan.caf` (≤30s) to the app bundle to use it; otherwise default sound is used.
+    /// Sound for when the notification is delivered (plays even when app is in background).
+    /// Uses .caf/.wav/.aiff from bundle, or converts adhanNotification.mp3 → CAF in Library/Sounds.
     private static var adhanSound: UNNotificationSound {
-        if Bundle.main.url(forResource: "adhan", withExtension: "caf") != nil {
-            return UNNotificationSound(named: UNNotificationSoundName("adhan.caf"))
-        }
-        if Bundle.main.url(forResource: "adhan", withExtension: "wav") != nil {
-            return UNNotificationSound(named: UNNotificationSoundName("adhan.wav"))
+        if let name = AdhanNotificationSoundConverter.prepareNotificationSound() {
+            return UNNotificationSound(named: UNNotificationSoundName(name))
         }
         return .default
+    }
+
+    /// Call from Settings to show whether custom Adhan file was found. Includes .mp3 (played in-app when notification is received).
+    static func isCustomAdhanSoundInBundle() -> Bool {
+        let candidates: [(base: String, ext: String)] = [
+            ("adhanNotification", "mp3"),
+            ("adhanNotification", "caf"),
+            ("adhanNotification", "wav"),
+            ("adhanNotification", "aiff"),
+        ]
+        return candidates.contains { Bundle.main.url(forResource: $0.base, withExtension: $0.ext) != nil }
     }
 
     /// Schedules one-time prayer notifications at the given times, using Adhan sound. Only future times are scheduled. Call this when prayer times are loaded for today.
@@ -90,6 +99,31 @@ actor NotificationService {
         let key = "saved_prayer_times_for_notifications"
         guard let encoded = try? JSONEncoder().encode(entries) else { return }
         UserDefaults.standard.set(encoded, forKey: key)
+    }
+
+    /// Schedules a one-time test notification in 10 seconds with the same Adhan sound. Use to verify notifications without waiting for prayer time.
+    func scheduleTestAdhanNotification() async {
+        let granted = await requestPermission()
+        guard granted else { return }
+
+        let content = UNMutableNotificationContent()
+        content.title = "Prayer Time"
+        content.body = "Test — It's time for Dhuhr prayer"
+        content.sound = Self.adhanSound
+        content.categoryIdentifier = "PRAYER_REMINDER"
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 7, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "prayer_test_adhan",
+            content: content,
+            trigger: trigger
+        )
+
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+        } catch {
+            print("Failed to schedule test Adhan notification: \(error)")
+        }
     }
 
     // MARK: - Doaa Reminders
