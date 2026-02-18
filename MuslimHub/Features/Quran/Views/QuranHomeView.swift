@@ -174,7 +174,7 @@ struct SurahRowView: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: AppSpacing.md) {
+            HStack(alignment: .center, spacing: AppSpacing.md) {
                 ZStack {
                     Image(systemName: "diamond.fill")
                         .font(.system(size: 40))
@@ -188,7 +188,7 @@ struct SurahRowView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(surah.englishName)
-                        .font(AppTypography.englishSubtitle)
+                        .font(AppTypography.englishBody)
                         .foregroundStyle(.primary)
 
                     HStack(spacing: AppSpacing.xs) {
@@ -205,12 +205,15 @@ struct SurahRowView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .frame(minHeight: 44, alignment: .leading)
 
-                Spacer()
+                Spacer(minLength: 0)
 
                 Text(surah.name)
-                    .font(AppTypography.arabicTitle)
+                    .font(AppTypography.arabicBody)
                     .foregroundStyle(IslamicColors.primaryGreenFallback)
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .padding(.horizontal, AppSpacing.md)
             .padding(.vertical, AppSpacing.sm + 2)
