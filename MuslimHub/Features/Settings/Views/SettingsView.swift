@@ -162,21 +162,6 @@ struct SettingsView: View {
                     displayedComponents: .hourAndMinute
                 )
                 .font(AppTypography.englishBody)
-
-                Button {
-                    Task {
-                        await NotificationService.shared.requestPermission()
-                        await NotificationService.shared.scheduleTestDoaaReminder()
-                    }
-                } label: {
-                    Label {
-                        Text(LanguageManager.shared.localized("Test reminder (in 10 sec)", arabic: "تجربة التذكير (خلال 10 ثوانٍ)"))
-                            .font(AppTypography.englishBody)
-                    } icon: {
-                        Image(systemName: "bell.badge.fill")
-                            .foregroundStyle(IslamicColors.primaryGreenFallback)
-                    }
-                }
             }
         } header: {
             Text(L10n.doaaReminders)
